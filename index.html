@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐶 狗狗歲數計算機</title>
+    
+    <!-- 引入 Google Fonts: Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+
+      <script src="app.js" defer></script>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 設定 Tailwind 自定義配置以符合色彩規範 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#A9A3C7',    // 主卡片色
+                        bg: '#E7E5EF',        // 背景、次卡片色
+                        ink: '#100F18',       // 文字、邊框
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'card': '32px',      // 統一的大圓角規範
+                        'pill': '9999px',    // Pill shape
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 引入 Lucide Icons (線條風格 Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+
+</head>
+<!-- 修改：保留 min-h-screen 確保背景色填滿，但 flex 佈局不再強制拉伸 main -->
+<body class="min-h-screen flex flex-col p-4 md:p-6 lg:p-8 gap-6 max-w-6xl mx-auto">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center w-full">
+        <div class="flex items-center gap-3">
+            <!-- 修正：保持外框與右側 Info 按鈕一致 -->
+            <div class="w-14 h-14 neo-border rounded-full bg-accent overflow-hidden">
+    <img src="img/corgi-RoundIcon.png"
+         alt="Corgi Icon"
+         class="w-full h-full object-cover">
+</div>
+
+
+            <!-- 修改：字體放大約 1.2 倍 (text-xl -> text-2xl, text-2xl -> text-3xl) -->
+            <h1 class="text-2xl md:text-3xl font-bold tracking-wide">狗狗歲數計算機</h1>
+        </div>
+        <button class="p-3 neo-border rounded-full bg-bg hover:bg-accent transition-colors duration-200" onclick="showInfo()" aria-label="Info">
+            <i data-lucide="info" class="w-6 h-6 text-ink"></i>
+        </button>
+    </header>
+
+    <!-- Main Dashboard -->
+    <!-- 修改：移除了 'flex-grow'，防止在闊屏幕時強制拉伸高度填滿視窗 -->
+    <main class="flex flex-col lg:flex-row gap-6 w-full">
+        
+        <!-- 左側：輸入區 (Desktop 30%) -->
+        <section class="w-full lg:w-[30%] flex flex-col gap-4">
+            <!-- 輸入卡片 -->
+            <!-- 保留 h-full，因為 flex-row 預設會 stretch，這樣左側卡片會自動與右側內容「等高」，但不會超過右側內容 -->
+            <div class="bg-bg neo-border rounded-card p-6 md:p-8 flex flex-col gap-6 h-full justify-center relative overflow-hidden">
+                <!-- 裝飾圓圈 (純視覺) -->
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent rounded-full opacity-20 pointer-events-none"></div>
+
+                <div class="flex flex-col gap-2">
+                    <label for="birthdate" class="text-lg font-bold flex items-center gap-2">
+                        <i data-lucide="calendar-days" class="w-5 h-5"></i>
+                        輸入狗狗資料
+                    </label>
+                    <p class="text-sm opacity-70">請選擇狗狗的出生日期</p>
+                </div>
+
+                <div class="relative">
+                    <input type="date" id="birthdate" class="w-full neo-border rounded-pill px-6 py-4 text-lg bg-white focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2 focus:ring-offset-bg transition-all">
+                </div>
+
+                <button id="calcBtn" class="w-full bg-ink text-bg rounded-pill py-4 text-lg font-bold neo-border border-ink hover:bg-opacity-90 transition-all btn-hover flex justify-center items-center gap-2 mt-4">
+                    <i data-lucide="calculator" class="w-5 h-5"></i>
+                    計算狗狗的年齡
+                </button>
+            </div>
+        </section>
+
+        <!-- 右側：結果區 (Desktop 70%) -->
+        <section class="w-full lg:w-[70%] flex flex-col gap-6">
+            
+            <!-- 上半部：結果卡片 (平板/桌面並排) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                
+                <!-- 卡片 1: 狗年齡 -->
+                <div class="bg-accent neo-border rounded-card p-6 md:p-8 flex flex-col justify-between min-h-[240px] relative group">
+                    <div class="flex justify-between items-start">
+                        <h2 class="text-lg font-bold opacity-80">你的狗狗年齡</h2>
+                        <i data-lucide="bone" class="w-6 h-6 text-ink opacity-50"></i>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div id="dogAgeResult" class="result-text-big font-bold break-words">
+                            -- <span class="text-2xl">歲</span>
+                        </div>
+                        <p class="text-sm md:text-base mt-2 opacity-70">實際出生時間計算</p>
+                    </div>
+                </div>
+
+                <!-- 卡片 2: 人類年齡 -->
+                <div class="bg-accent neo-border rounded-card p-6 md:p-8 flex flex-col justify-between min-h-[240px] relative group">
+                    <div class="flex justify-between items-start">
+                        <h2 class="text-lg font-bold opacity-80">換算成人類年齡</h2>
+                        <i data-lucide="user" class="w-6 h-6 text-ink opacity-50"></i>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div id="humanAgeResult" class="result-text-big font-bold break-words">
+                            -- <span class="text-2xl">歲</span>
+                        </div>
+                        <p class="text-sm md:text-base mt-2 opacity-70">基於表觀遺傳學公式</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 下半部：參考文獻 (滿版) -->
+            <div class="bg-bg neo-border rounded-card p-6 md:p-8 w-full flex flex-col justify-center gap-3">
+                <div class="flex items-center gap-2 mb-1">
+                    <i data-lucide="book-open" class="w-5 h-5 text-ink"></i>
+                    <h3 class="font-bold text-lg">參考文獻與公式</h3>
+                </div>
+                
+                <div class="space-y-2">
+                    <div class="bg-white neo-border rounded-xl p-4 inline-block mb-2">
+                        <code class="text-lg font-mono font-bold">Human_Age = 16 × ln(Dog_Age) + 31</code>
+                    </div>
+                    <p class="text-sm md:text-base leading-relaxed">
+                        <span class="font-bold">研究來源：</span> Wang et al., <span class="italic">Cell Systems</span> (2020) – "Quantitative Translation of Dog-to-Human Aging by Conserved Remodeling of the DNA Methylome" (UCSD 狗隻表觀遺傳年齡研究)。
+                    </p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- 簡單的 Alert Modal (取代 window.alert) -->
+    <div id="customModal" class="fixed inset-0 bg-ink bg-opacity-50 hidden items-center justify-center z-50 px-4">
+        <div class="bg-bg neo-border rounded-card p-6 max-w-sm w-full text-center shadow-none">
+            <div class="mx-auto bg-accent w-12 h-12 rounded-full flex items-center justify-center mb-4 neo-border">
+                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">請注意</h3>
+            <p id="modalMsg" class="mb-6 opacity-80">請先選擇 🐶狗狗的出生日期！</p>
+            <button onclick="closeModal()" class="w-full bg-ink text-bg rounded-pill py-3 font-bold hover:opacity-90">知道了</button>
+        </div>
+    </div>
+
+
+</body>
+</html>

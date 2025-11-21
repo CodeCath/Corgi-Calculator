@@ -1,0 +1,39 @@
+        /* 全局樣式調整 */
+        body {
+            background-color: #cccccc;
+            color: #100F18;
+            /* 防止手機版水平滾動 */
+            overflow-x: hidden; 
+        }
+
+        /* 自定義 Date Picker 樣式，使其符合設計風格 */
+        input[type="date"] {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: transparent;
+            font-family: 'Noto Sans TC', sans-serif;
+            color: #100F18;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        /* 移除 Date Picker 預設圖標，改用我們自己的佈局 */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        /* 邊框與過渡效果 */
+        .neo-border {
+            border: 2px solid #100F18;
+        }
+
+        .btn-hover:active {
+            transform: scale(0.98);
+        }
+        
+        /* 響應式字體調整 */
+        .result-text-big {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.1;
+        }
